@@ -6,139 +6,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-
-  --radius: 0.5rem;
-
-  --color-background: oklch(0.9765 0.0054 274.97);
-  --color-foreground: oklch(0.2437 0.0614 261.77);
-
-  --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.2437 0.0614 261.77);
-
-  --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.2437 0.0614 261.77);
-
-  --color-primary: oklch(0.4532 0.2239 282.67);
-  --color-primary-foreground: oklch(1 0 0);
-
-  --color-secondary: oklch(0.9471 0.0285 296.75);
-  --color-secondary-foreground: oklch(0.4532 0.2239 282.67);
-
-  --color-muted: oklch(0.9611 0.0070 268.55);
-  --color-muted-foreground: oklch(0.5645 0.0451 269.55);
-
-  --color-accent: oklch(0.9425 0.0087 264.52);
-  --color-accent-foreground: oklch(0.3529 0.0624 266.26);
-
-  --color-destructive: oklch(0.6371 0.2104 28.54);
-  --color-destructive-foreground: oklch(1 0 0);
-
-  --color-success: oklch(0.6859 0.1667 154.86);
-  --color-success-foreground: oklch(1 0 0);
-
-  --color-warning: oklch(0.7469 0.1701 62.11);
-  --color-warning-foreground: oklch(0.2874 0.0364 268.50);
-
-  --color-border: oklch(0.9310 0.0113 269.55);
-  --color-input: oklch(0.9310 0.0113 269.55);
-  --color-ring: oklch(0.4532 0.2239 282.67);
-
-  --color-sidebar: oklch(1 0 0);
-  --color-sidebar-foreground: oklch(0.2437 0.0614 261.77);
-  --color-sidebar-primary: oklch(0.4532 0.2239 282.67);
-  --color-sidebar-primary-foreground: oklch(1 0 0);
-  --color-sidebar-accent: oklch(0.9471 0.0285 296.75);
-  --color-sidebar-accent-foreground: oklch(0.3529 0.0624 266.26);
-  --color-sidebar-border: oklch(0.9310 0.0113 269.55);
-  --color-sidebar-ring: oklch(0.4532 0.2239 282.67);
-
-  --color-chart-1: oklch(0.4532 0.2239 282.67);
-  --color-chart-2: oklch(0.6859 0.1667 154.86);
-  --color-chart-3: oklch(0.7469 0.1701 62.11);
-  --color-chart-4: oklch(0.6371 0.2104 28.54);
-  --color-chart-5: oklch(0.5356 0.2253 335.66);
-}
-
-.dark {
-  /* Body surfaces — using design system gray-900 / gray-800 for clear elevation */
-  --color-background: oklch(0.2131 0.0346 270.77);   /* gray-900 #131829 */
-  --color-foreground: oklch(0.9425 0.0087 264.52);   /* gray-100 */
-
-  --color-card: oklch(0.2874 0.0364 268.50);          /* gray-800 #232A3D */
-  --color-card-foreground: oklch(0.9425 0.0087 264.52);
-
-  --color-popover: oklch(0.2874 0.0364 268.50);
-  --color-popover-foreground: oklch(0.9425 0.0087 264.52);
-
-  --color-primary: oklch(0.72 0.18 283);
-  --color-primary-foreground: oklch(0.2131 0.0346 270.77);
-
-  --color-secondary: oklch(0.32 0.032 283);
-  --color-secondary-foreground: oklch(0.9425 0.0087 264.52);
-
-  --color-muted: oklch(0.30 0.030 270);
-  --color-muted-foreground: oklch(0.65 0.025 268);
-
-  --color-accent: oklch(0.34 0.038 283);
-  --color-accent-foreground: oklch(0.9425 0.0087 264.52);
-
-  --color-destructive: oklch(0.65 0.22 28.54);
-  --color-destructive-foreground: oklch(1 0 0);
-
-  --color-success: oklch(0.72 0.16 154.86);
-  --color-success-foreground: oklch(1 0 0);
-
-  --color-warning: oklch(0.7469 0.1701 62.11);
-  --color-warning-foreground: oklch(0.7469 0.1701 62.11);   /* amber on dark — use color itself as text */
-
-  --color-border: oklch(0.3812 0.0392 269.00);        /* gray-700 #3A4258 */
-  --color-input: oklch(0.3812 0.0392 269.00);
-  --color-ring: oklch(0.72 0.18 283);
-
-  /* Sidebar — deep navy (ink-1) to stand apart from gray-900 body */
-  --color-sidebar: oklch(0.2437 0.0614 261.77);       /* ink-1 #0F1F3D */
-  --color-sidebar-foreground: oklch(0.9425 0.0087 264.52);
-  --color-sidebar-primary: oklch(0.72 0.18 283);
-  --color-sidebar-primary-foreground: oklch(0.2131 0.0346 270.77);
-  --color-sidebar-accent: oklch(0.30 0.042 268);
-  --color-sidebar-accent-foreground: oklch(0.9425 0.0087 264.52);
-  --color-sidebar-border: oklch(0.3200 0.0450 264);
-  --color-sidebar-ring: oklch(0.72 0.18 283);
-
-  /* Un-prefixed tokens fed to @theme inline */
-  --background: oklch(0.2131 0.0346 270.77);
-  --foreground: oklch(0.9425 0.0087 264.52);
-  --card: oklch(0.2874 0.0364 268.50);
-  --card-foreground: oklch(0.9425 0.0087 264.52);
-  --popover: oklch(0.2874 0.0364 268.50);
-  --popover-foreground: oklch(0.9425 0.0087 264.52);
-  --primary: oklch(0.72 0.18 283);
-  --primary-foreground: oklch(0.2131 0.0346 270.77);
-  --secondary: oklch(0.32 0.032 283);
-  --secondary-foreground: oklch(0.9425 0.0087 264.52);
-  --muted: oklch(0.30 0.030 270);
-  --muted-foreground: oklch(0.65 0.025 268);
-  --accent: oklch(0.34 0.038 283);
-  --accent-foreground: oklch(0.9425 0.0087 264.52);
-  --destructive: oklch(0.65 0.22 28.54);
-  --border: oklch(0.3812 0.0392 269.00);
-  --input: oklch(0.3812 0.0392 269.00);
-  --ring: oklch(0.72 0.18 283);
-  --chart-1: oklch(0.72 0.18 283);
-  --chart-2: oklch(0.72 0.16 154.86);
-  --chart-3: oklch(0.7469 0.1701 62.11);
-  --chart-4: oklch(0.66 0.22 28.54);
-  --chart-5: oklch(0.68 0.18 335.66);
-  --sidebar: oklch(0.2437 0.0614 261.77);
-  --sidebar-foreground: oklch(0.9425 0.0087 264.52);
-  --sidebar-primary: oklch(0.72 0.18 283);
-  --sidebar-primary-foreground: oklch(0.2131 0.0346 270.77);
-  --sidebar-accent: oklch(0.30 0.042 268);
-  --sidebar-accent-foreground: oklch(0.9425 0.0087 264.52);
-  --sidebar-border: oklch(0.3200 0.0450 264);
-  --sidebar-ring: oklch(0.72 0.18 283);
 }
 
 @layer base {
@@ -200,6 +68,11 @@
   --accent: oklch(0.9425 0.0087 264.52);
   --accent-foreground: oklch(0.3529 0.0624 266.26);
   --destructive: oklch(0.6371 0.2104 28.54);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.6859 0.1667 154.86);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.7469 0.1701 62.11);
+  --warning-foreground: oklch(0.2874 0.0364 268.50);
   --border: oklch(0.9310 0.0113 269.55);
   --input: oklch(0.9310 0.0113 269.55);
   --ring: oklch(0.4532 0.2239 282.67);
@@ -342,6 +215,45 @@
   --sp-24: 96px;
 }
 
+.dark {
+  --background: oklch(0.2131 0.0346 270.77);
+  --foreground: oklch(0.9425 0.0087 264.52);
+  --card: oklch(0.2874 0.0364 268.50);
+  --card-foreground: oklch(0.9425 0.0087 264.52);
+  --popover: oklch(0.2874 0.0364 268.50);
+  --popover-foreground: oklch(0.9425 0.0087 264.52);
+  --primary: oklch(0.72 0.18 283);
+  --primary-foreground: oklch(0.2131 0.0346 270.77);
+  --secondary: oklch(0.32 0.032 283);
+  --secondary-foreground: oklch(0.9425 0.0087 264.52);
+  --muted: oklch(0.30 0.030 270);
+  --muted-foreground: oklch(0.65 0.025 268);
+  --accent: oklch(0.34 0.038 283);
+  --accent-foreground: oklch(0.9425 0.0087 264.52);
+  --destructive: oklch(0.65 0.22 28.54);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.72 0.16 154.86);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.7469 0.1701 62.11);
+  --warning-foreground: oklch(0.7469 0.1701 62.11);
+  --border: oklch(0.3812 0.0392 269.00);
+  --input: oklch(0.3812 0.0392 269.00);
+  --ring: oklch(0.72 0.18 283);
+  --chart-1: oklch(0.72 0.18 283);
+  --chart-2: oklch(0.72 0.16 154.86);
+  --chart-3: oklch(0.7469 0.1701 62.11);
+  --chart-4: oklch(0.66 0.22 28.54);
+  --chart-5: oklch(0.68 0.18 335.66);
+  --sidebar: oklch(0.2437 0.0614 261.77);
+  --sidebar-foreground: oklch(0.9425 0.0087 264.52);
+  --sidebar-primary: oklch(0.72 0.18 283);
+  --sidebar-primary-foreground: oklch(0.2131 0.0346 270.77);
+  --sidebar-accent: oklch(0.30 0.042 268);
+  --sidebar-accent-foreground: oklch(0.9425 0.0087 264.52);
+  --sidebar-border: oklch(0.3200 0.0450 264);
+  --sidebar-ring: oklch(0.72 0.18 283);
+}
+
 @theme inline {
   --font-sans: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -362,6 +274,11 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
