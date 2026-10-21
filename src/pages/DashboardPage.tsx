@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   BuildingIcon,
@@ -16,16 +17,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatNaira, formatRelative } from "@/lib/format";
 import { MOCK_ANALYTICS_SUMMARY, MOCK_GMV_TREND, MOCK_CHANNEL_MIX } from "@/mock/analytics";
-import { MOCK_MERCHANTS } from "@/mock/merchants";
 import { MOCK_TRANSACTIONS } from "@/mock/transactions";
 import { MOCK_FRAUD_ALERTS } from "@/mock/fraud";
 import { MOCK_DISPUTES } from "@/mock/disputes";
 import { useAdminStore } from "@/store/useAdminStore";
+import { listAdminMerchants } from "@/lib/admin-merchants-api";
 
 export function DashboardPage() {
-  const role = useAdminStore((s) => s.role);
+  const accessToken = useAdminStore((s) => s.accessToken);
+  const [onboardingQueueTotal, setOnboardingQueueTotal] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!accessToken?.trim()) {
+      setOnboardingQueueTotal(null);
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const [submitted, underReview] = await Promise.all([
+          listAdminMerchants({ page: 1, pageSize: 1, onboardingStatus: "Submitted", sort: "created_at", sortDesc: true }),
+          listAdminMerchants({ page: 1, pageSize: 1, onboardingStatus: "UnderReview", sort: "created_at", sortDesc: true }),
+        ]);
+        if (cancelled) return;
+        setOnboardingQueueTotal(submitted.totalCount + underReview.totalCount);
+      } catch {
+        if (!cancelled) setOnboardingQueueTotal(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+
   const s = MOCK_ANALYTICS_SUMMARY;
-  const pendingKyc = MOCK_MERCHANTS.filter((m) => m.kycStatus === "in_review" || m.kycStatus === "pending").length;
   const openAlerts = MOCK_FRAUD_ALERTS.filter((a) => a.status === "open").length;
   const openDisputes = MOCK_DISPUTES.filter((d) => d.status === "open" || d.status === "under_review").length;
   const recentTxns = MOCK_TRANSACTIONS.slice(0, 6);
@@ -42,11 +67,11 @@ export function DashboardPage() {
         description="Platform overview — all merchants, all channels"
         actions={
           <div className="flex items-center gap-2">
-            {pendingKyc > 0 && (
-              <Link to="/merchants/kyc-queue">
+            {onboardingQueueTotal !== null && onboardingQueueTotal > 0 && (
+              <Link to="/merchants?onboarding=Submitted">
                 <Button variant="outline" size="sm" className="gap-2">
                   <AlertTriangleIcon className="size-4 text-warning" />
-                  {pendingKyc} KYC pending
+                  {onboardingQueueTotal} onboarding review
                 </Button>
               </Link>
             )}
@@ -131,9 +156,30 @@ export function DashboardPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(0)}M`} />
-                <Tooltip formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "GMV"]} />
+                <XAxis
+                  dataKey="date"
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(0)}M`}
+                />
+                <Tooltip
+                  cursor={{ stroke: "var(--color-primary)" }}
+                  contentStyle={{
+                    background: "var(--color-popover)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
+                  formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "GMV"]}
+                />
                 <Area type="monotone" dataKey="gmv" stroke="var(--color-primary)" strokeWidth={2} fill="url(#gmvGrad)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -152,7 +198,15 @@ export function DashboardPage() {
                     <Cell key={index} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => [`${v}%`, ""]} />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--color-popover)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
+                  formatter={(v) => [`${v}%`, ""]}
+                />
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-2 space-y-1.5">
@@ -202,16 +256,18 @@ export function DashboardPage() {
             <CardTitle>Action items</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {pendingKyc > 0 && (
-              <Link to="/merchants/kyc-queue" className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/5 p-3 hover:bg-warning/10">
+            {onboardingQueueTotal !== null && onboardingQueueTotal > 0 && (
+              <Link to="/merchants?onboarding=Submitted" className="flex items-center gap-3 rounded-lg border border-warning/30 bg-warning/5 p-3 hover:bg-warning/10">
                 <AlertTriangleIcon className="size-4 shrink-0 text-warning" />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium">{pendingKyc} merchants awaiting KYC review</p>
-                  <p className="text-xs text-muted-foreground">Review and approve or reject documents</p>
+                  <p className="text-sm font-medium">
+                    {onboardingQueueTotal} merchant{onboardingQueueTotal === 1 ? "" : "s"} in onboarding review
+                  </p>
+                  <p className="text-xs text-muted-foreground">Submitted or under review</p>
                 </div>
               </Link>
             )}
-            {openAlerts > 0 && (role === "super_admin" || role === "risk_compliance") && (
+            {openAlerts > 0 && (
               <Link to="/fraud/alerts" className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 p-3 hover:bg-destructive/10">
                 <ShieldAlertIcon className="size-4 shrink-0 text-destructive" />
                 <div className="min-w-0">
@@ -220,7 +276,7 @@ export function DashboardPage() {
                 </div>
               </Link>
             )}
-            {openDisputes > 0 && (role === "super_admin" || role === "ops_support") && (
+            {openDisputes > 0 && (
               <Link to="/transactions/disputes" className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3 hover:bg-primary/10">
                 <ReceiptIcon className="size-4 shrink-0 text-primary" />
                 <div className="min-w-0">
@@ -233,6 +289,7 @@ export function DashboardPage() {
               <ClockIcon className="size-4 shrink-0 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">Platform healthy</p>
+                {/* eslint-disable-next-line react-hooks/purity */}
                 <p className="text-xs text-muted-foreground">All processors operational · Last checked {formatRelative(new Date(Date.now() - 120000).toISOString())}</p>
               </div>
             </div>

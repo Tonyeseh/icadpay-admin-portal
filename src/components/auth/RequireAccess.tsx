@@ -3,10 +3,10 @@ import { useAdminStore } from "@/store/useAdminStore";
 import { canVisit } from "@/lib/rbac";
 
 export function RequireAccess() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const { pathname } = useLocation();
 
-  if (!canVisit(role, pathname)) {
+  if (!canVisit(permissions, pathname)) {
     return <Navigate to="/dashboard" replace />;
   }
 

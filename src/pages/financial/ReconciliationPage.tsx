@@ -1,7 +1,7 @@
 import { DownloadIcon, FileTextIcon, CheckCircleIcon, ClockIcon } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatNaira, formatDate } from "@/lib/format";
 import { MOCK_RECONCILIATION } from "@/mock/financial";

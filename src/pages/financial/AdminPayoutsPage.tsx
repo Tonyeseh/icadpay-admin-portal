@@ -17,14 +17,14 @@ import { toast } from "sonner";
 import type { AdminPayout } from "@/types";
 
 export function AdminPayoutsPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [payouts, setPayouts] = useState(MOCK_ADMIN_PAYOUTS);
   const [approving, setApproving] = useState<AdminPayout | null>(null);
   const [holding, setHolding] = useState<AdminPayout | null>(null);
 
-  const canWrite = canDo(role, "financial:payouts");
+  const canWrite = canDo(permissions, "financial:payouts");
 
   const filtered = payouts.filter((p) => {
     const matchQ = !query || p.merchantName.toLowerCase().includes(query.toLowerCase()) || p.reference.toLowerCase().includes(query.toLowerCase());

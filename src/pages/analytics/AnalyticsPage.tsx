@@ -5,8 +5,8 @@ import {
 import { PageHeader } from "@/components/common/PageHeader";
 import { KpiCard } from "@/components/common/KpiCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUpIcon, ReceiptIcon, ShieldAlertIcon, WalletIcon, BuildingIcon } from "lucide-react";
-import { formatNaira, formatPercent } from "@/lib/format";
+import { TrendingUpIcon, ReceiptIcon, ShieldAlertIcon, WalletIcon } from "lucide-react";
+import { formatNaira } from "@/lib/format";
 import {
   MOCK_ANALYTICS_SUMMARY,
   MOCK_GMV_TREND,
@@ -52,9 +52,30 @@ export function AnalyticsPage() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(0)}M`} />
-                <Tooltip formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "GMV"]} />
+                <XAxis
+                  dataKey="date"
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(0)}M`}
+                />
+                <Tooltip
+                  cursor={{ stroke: "var(--color-primary)" }}
+                  contentStyle={{
+                    background: "var(--color-popover)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
+                  formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "GMV"]}
+                />
                 <Area type="monotone" dataKey="value" stroke="var(--color-primary)" strokeWidth={2} fill="url(#gmvGrad2)" />
               </AreaChart>
             </ResponsiveContainer>
@@ -67,9 +88,30 @@ export function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={approvalData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                <YAxis domain={[88, 99]} tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}%`} />
-                <Tooltip formatter={(v) => [`${v}%`, "Approval rate"]} />
+                <XAxis
+                  dataKey="date"
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  domain={[88, 99]}
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `${v}%`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--color-popover)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
+                  formatter={(v) => [`${v}%`, "Approval rate"]}
+                />
                 <Line type="monotone" dataKey="value" stroke="var(--color-chart-2)" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
@@ -82,9 +124,29 @@ export function AnalyticsPage() {
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={feeData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(1)}M`} />
-                <Tooltip formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "Fees"]} />
+                <XAxis
+                  dataKey="date"
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `₦${(v / 1_000_000).toFixed(1)}M`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--color-popover)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-popover-foreground)",
+                    fontSize: 12,
+                  }}
+                  formatter={(v) => [`₦${((v as number) / 1_000_000).toFixed(2)}M`, "Fees"]}
+                />
                 <Bar dataKey="value" fill="var(--color-chart-3)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

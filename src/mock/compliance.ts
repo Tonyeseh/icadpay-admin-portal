@@ -126,7 +126,7 @@ export const MOCK_AUDIT_LOG: AuditLogEntry[] = Array.from({ length: 40 }, (_, i)
     id: `aud_${String(i + 1).padStart(4, "0")}`,
     adminId: admin.id,
     adminName: `${admin.firstName} ${admin.lastName}`,
-    adminRole: admin.role,
+    adminRole: admin.role as AuditLogEntry["adminRole"],
     action: act.action,
     entity: act.entity,
     entityId: `${act.entity.replace("_", "")}_${String(i + 1).padStart(4, "0")}`,
