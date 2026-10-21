@@ -19,14 +19,13 @@ import { toast } from "sonner";
 import type { FraudRule } from "@/types";
 
 export function RulesEnginePage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [rules, setRules] = useState(MOCK_FRAUD_RULES);
   const [deleting, setDeleting] = useState<FraudRule | null>(null);
   const [editing, setEditing] = useState<FraudRule | null>(null);
   const [creating, setCreating] = useState(false);
-  const [newRule, setNewRule] = useState({ name: "", description: "", condition: "", action: "flag" as FraudRule["action"], category: "velocity" as FraudRule["category"] });
 
-  const canWrite = canDo(role, "fraud:rules");
+  const canWrite = canDo(permissions, "fraud:rules");
 
   function toggleRule(id: string) {
     setRules((prev) => prev.map((r) => r.id === id ? { ...r, status: r.status === "active" ? "inactive" as const : "active" as const } : r));

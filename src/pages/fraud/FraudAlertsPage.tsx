@@ -14,12 +14,12 @@ import { toast } from "sonner";
 import type { FraudAlert } from "@/types";
 
 export function FraudAlertsPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [alerts, setAlerts] = useState(MOCK_FRAUD_ALERTS);
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filtered = alerts.filter((a) => statusFilter === "all" || a.status === statusFilter);
-  const canWrite = canDo(role, "fraud:write");
+  const canWrite = canDo(permissions, "fraud:write");
 
   function update(id: string, status: FraudAlert["status"]) {
     setAlerts((prev) => prev.map((a) => a.id === id ? { ...a, status } : a));

@@ -30,10 +30,10 @@ const FLAG_COLORS: Record<AmlEntry["flag"], string> = {
 };
 
 export function AmlQueuePage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [entries, setEntries] = useState(MOCK_AML_QUEUE);
   const [statusFilter, setStatusFilter] = useState("all");
-  const canWrite = canDo(role, "aml:write");
+  const canWrite = canDo(permissions, "aml:write");
 
   const filtered = entries.filter((e) => statusFilter === "all" || e.status === statusFilter);
 

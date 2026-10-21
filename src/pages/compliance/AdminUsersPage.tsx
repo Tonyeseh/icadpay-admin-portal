@@ -16,18 +16,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatRelative, initials } from "@/lib/format";
 import { MOCK_ADMIN_USERS } from "@/mock/compliance";
-import { ROLE_LABELS, ALL_ROLES } from "@/lib/rbac";
-import { canDo } from "@/lib/rbac";
+import { ALL_ROLES, canDo, roleLabel } from "@/lib/rbac";
 import { useAdminStore } from "@/store/useAdminStore";
 import { toast } from "sonner";
 import type { AdminUser } from "@/types";
 
 export function AdminUsersPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [users, setUsers] = useState(MOCK_ADMIN_USERS);
   const [suspending, setSuspending] = useState<AdminUser | null>(null);
   const [inviting, setInviting] = useState(false);
-  const canWrite = canDo(role, "compliance:users");
+  const canWrite = canDo(permissions, "compliance:users");
 
   return (
     <div>
@@ -67,7 +66,7 @@ export function AdminUsersPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="hidden sm:flex items-center gap-2">
-                    <Badge variant="outline" className="text-xs">{ROLE_LABELS[u.role]}</Badge>
+                    <Badge variant="outline" className="text-xs">{roleLabel(u.role)}</Badge>
                     <StatusBadge status={u.status} />
                   </div>
                   {u.lastLoginAt && (
@@ -137,7 +136,7 @@ export function AdminUsersPage() {
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {ALL_ROLES.map((r) => (
-                    <SelectItem key={r} value={r}>{ROLE_LABELS[r]}</SelectItem>
+                    <SelectItem key={r} value={r}>{roleLabel(r)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

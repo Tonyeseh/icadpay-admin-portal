@@ -13,7 +13,7 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 // Merchants
 import { MerchantsPage } from "@/pages/merchants/MerchantsPage";
 import { MerchantDetailPage } from "@/pages/merchants/MerchantDetailPage";
-import { KycQueuePage } from "@/pages/merchants/KycQueuePage";
+import { SettlementAccountsPage } from "@/pages/merchants/SettlementAccountsPage";
 
 // Transactions
 import { TransactionsPage } from "@/pages/transactions/TransactionsPage";
@@ -34,9 +34,14 @@ import { RoutingRulesPage } from "@/pages/platform/RoutingRulesPage";
 import { FxRatesPage } from "@/pages/platform/FxRatesPage";
 import { WebhooksPage } from "@/pages/platform/WebhooksPage";
 import { ChangeLogPage } from "@/pages/platform/ChangeLogPage";
+import { CompanyTypesPage } from "@/pages/platform/CompanyTypesPage";
+import { IndustryTypesPage } from "@/pages/platform/IndustryTypesPage";
+import { DocumentTypesPage } from "@/pages/platform/DocumentTypesPage";
+import { MerchantRolesPage } from "@/pages/platform/MerchantRolesPage";
 
 // Compliance
 import { AdminUsersPage } from "@/pages/compliance/AdminUsersPage";
+import { AdminRolesPage } from "@/pages/compliance/AdminRolesPage";
 import { AuditLogPage } from "@/pages/compliance/AuditLogPage";
 
 // Analytics
@@ -56,10 +61,13 @@ function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
 
-              {/* Merchants */}
-              <Route path="/merchants" element={<MerchantsPage />} />
-              <Route path="/merchants/kyc-queue" element={<KycQueuePage />} />
-              <Route path="/merchants/:id" element={<MerchantDetailPage />} />
+              {/* Merchants — merchants.view */}
+              <Route element={<RequireAccess />}>
+                <Route path="/merchants" element={<MerchantsPage />} />
+                <Route path="/merchants/kyc-queue" element={<Navigate to="/merchants?onboarding=Submitted" replace />} />
+                <Route path="/merchants/settlement-accounts" element={<SettlementAccountsPage />} />
+                <Route path="/merchants/:id" element={<MerchantDetailPage />} />
+              </Route>
 
               {/* Transactions */}
               <Route path="/transactions" element={<TransactionsPage />} />
@@ -85,11 +93,16 @@ function App() {
                 <Route path="/platform/fx-rates" element={<FxRatesPage />} />
                 <Route path="/platform/webhooks" element={<WebhooksPage />} />
                 <Route path="/platform/change-log" element={<ChangeLogPage />} />
+                <Route path="/platform/company-types" element={<CompanyTypesPage />} />
+                <Route path="/platform/industry-types" element={<IndustryTypesPage />} />
+                <Route path="/platform/document-types" element={<DocumentTypesPage />} />
+                <Route path="/platform/merchant-roles" element={<MerchantRolesPage />} />
               </Route>
 
               {/* Compliance — super_admin only for /users; audit-log: super_admin, risk_compliance, auditor */}
               <Route element={<RequireAccess />}>
                 <Route path="/compliance/users" element={<AdminUsersPage />} />
+                <Route path="/compliance/admin-roles" element={<AdminRolesPage />} />
                 <Route path="/compliance/audit-log" element={<AuditLogPage />} />
               </Route>
 

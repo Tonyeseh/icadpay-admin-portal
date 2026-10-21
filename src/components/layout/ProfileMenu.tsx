@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAdminStore } from "@/store/useAdminStore";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
-import { ROLE_LABELS } from "@/lib/rbac";
+import { roleLabel } from "@/lib/rbac";
 import { initials } from "@/lib/format";
 import { toast } from "sonner";
 
 export function ProfileMenu() {
   const user = useAdminStore((s) => s.user);
-  const role = useAdminStore((s) => s.role);
+  const roleName = useAdminStore((s) => s.roleName);
   const signOut = useAdminStore((s) => s.signOut);
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
@@ -40,7 +40,7 @@ export function ProfileMenu() {
             <span className="hidden text-left leading-tight md:block">
               <span className="block text-xs font-semibold normal-case tracking-normal text-foreground">{name}</span>
               <span className="block text-[10px] font-normal text-muted-foreground normal-case tracking-normal">
-                {ROLE_LABELS[role]}
+                {roleName || roleLabel(user.role)}
               </span>
             </span>
             <ChevronDownIcon className="hidden md:block" />
@@ -69,8 +69,8 @@ export function ProfileMenu() {
         description="You'll need to sign in again to access the admin portal."
         confirmLabel="Sign out"
         variant="destructive"
-        onConfirm={() => {
-          signOut();
+        onConfirm={async () => {
+          await signOut();
           toast.success("Signed out");
           navigate("/login");
         }}

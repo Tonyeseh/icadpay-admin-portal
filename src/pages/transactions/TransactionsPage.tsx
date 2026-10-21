@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import type { AdminTransaction } from "@/types";
 
 export function TransactionsPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [channelFilter, setChannelFilter] = useState("all");
@@ -135,12 +135,12 @@ export function TransactionsPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => setSelected(t)}>View details</DropdownMenuItem>
-                          {canDo(role, "transactions:refund") && t.status === "success" && (
+                          {canDo(permissions, "transactions:refund") && t.status === "success" && (
                             <DropdownMenuItem onClick={() => toast.success("Refund initiated")}>
                               <RotateCcwIcon /> Issue refund
                             </DropdownMenuItem>
                           )}
-                          {canDo(role, "transactions:override") && t.status === "failed" && (
+                          {canDo(permissions, "transactions:override") && t.status === "failed" && (
                             <>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem variant="destructive" onClick={() => setOverriding(t)}>
@@ -200,13 +200,13 @@ export function TransactionsPage() {
                 </dl>
 
                 <div className="flex gap-2 pt-2">
-                  {canDo(role, "transactions:refund") && selected.status === "success" && (
+                  {canDo(permissions, "transactions:refund") && selected.status === "success" && (
                     <Button variant="outline" size="sm" onClick={() => { toast.success("Refund initiated"); setSelected(null); }}>
                       <RotateCcwIcon className="size-4" />
                       Issue refund
                     </Button>
                   )}
-                  {canDo(role, "transactions:override") && selected.status === "failed" && (
+                  {canDo(permissions, "transactions:override") && selected.status === "failed" && (
                     <Button variant="destructive" size="sm" onClick={() => { setOverriding(selected); setSelected(null); }}>
                       <ZapIcon className="size-4" />
                       Manual override

@@ -21,12 +21,12 @@ const SOURCE_LABELS: Record<FxRate["source"], string> = {
 };
 
 export function FxRatesPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [rates, setRates] = useState(MOCK_FX_RATES);
   const [editing, setEditing] = useState<FxRate | null>(null);
   const [editRate, setEditRate] = useState("");
   const [editSpread, setEditSpread] = useState("");
-  const canWrite = canDo(role, "platform:write");
+  const canWrite = canDo(permissions, "platform:write");
 
   return (
     <div>

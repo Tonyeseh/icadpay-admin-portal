@@ -14,10 +14,10 @@ import { toast } from "sonner";
 import type { PlatformWebhook } from "@/types";
 
 export function WebhooksPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [webhooks, setWebhooks] = useState(MOCK_PLATFORM_WEBHOOKS);
   const [deleting, setDeleting] = useState<PlatformWebhook | null>(null);
-  const canWrite = canDo(role, "platform:write");
+  const canWrite = canDo(permissions, "platform:write");
 
   return (
     <div>

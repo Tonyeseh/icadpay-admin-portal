@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import type { Dispute } from "@/types";
 
 export function DisputesPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [disputes, setDisputes] = useState(MOCK_DISPUTES);
@@ -94,7 +94,7 @@ export function DisputesPage() {
                         {overdue && " (overdue)"}
                       </td>
                       <td className="px-4 py-3">
-                        {canDo(role, "disputes:write") && (d.status === "open" || d.status === "under_review") && (
+                        {canDo(permissions, "disputes:write") && (d.status === "open" || d.status === "under_review") && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="icon-sm">

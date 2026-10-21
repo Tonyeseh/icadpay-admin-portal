@@ -1,3 +1,48 @@
+/** Convert integer minor units to a major-unit number using ISO currency fraction digits. */
+function minorToMajorUnits(amountMinor: number, currency: string): number {
+  const c = currency.trim().toUpperCase() || "NGN";
+  let fractionDigits = 2;
+  try {
+    fractionDigits = new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: c,
+    }).resolvedOptions().maximumFractionDigits ?? 2;
+  } catch {
+    fractionDigits = 2;
+  }
+  return amountMinor / 10 ** fractionDigits;
+}
+
+/** Format integer minor units (e.g. kobo) with the given ISO currency code. */
+export function formatMinorUnits(
+  amountMinor: number,
+  currency: string,
+  opts: { compact?: boolean } = {},
+): string {
+  const c = currency.trim().toUpperCase() || "NGN";
+  const minor = Number(amountMinor);
+  if (!Number.isFinite(minor)) return "—";
+  const major = minorToMajorUnits(minor, c);
+  try {
+    if (opts.compact && Math.abs(major) >= 1_000_000) {
+      return new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: c,
+        notation: "compact",
+        maximumFractionDigits: 2,
+      }).format(major);
+    }
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: c,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(major);
+  } catch {
+    return `${c} ${major.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+}
+
 export function formatNaira(kobo: number, opts: { compact?: boolean } = {}): string {
   const value = kobo / 100;
   if (opts.compact && value >= 1_000_000_000) {

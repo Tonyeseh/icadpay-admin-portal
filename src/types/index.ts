@@ -24,7 +24,7 @@ export interface AdminUser {
   lastName: string;
   email: string;
   phone: string;
-  role: AdminRole;
+  role: string;
   status: "active" | "invited" | "suspended";
   lastLoginAt?: string;
   createdAt: string;

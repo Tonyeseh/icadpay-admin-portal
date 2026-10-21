@@ -16,90 +16,46 @@ type Permission =
   | "compliance:users"
   | "audit:write";
 
-const ROLE_PERMISSIONS: Record<AdminRole, Permission[]> = {
-  super_admin: [
-    "merchants:write",
-    "merchants:suspend",
-    "merchants:kyc_review",
-    "transactions:override",
-    "transactions:refund",
-    "disputes:write",
-    "fraud:write",
-    "fraud:rules",
-    "aml:write",
-    "financial:write",
-    "financial:payouts",
-    "platform:write",
-    "compliance:users",
-    "audit:write",
-  ],
-  ops_support: [
-    "merchants:kyc_review",
-    "transactions:refund",
-    "disputes:write",
-  ],
-  risk_compliance: [
-    "merchants:kyc_review",
-    "fraud:write",
-    "fraud:rules",
-    "aml:write",
-  ],
-  finance_settlements: [
-    "financial:write",
-    "financial:payouts",
-  ],
-  auditor: [],
+/** Mock pages still call `canDo` with these keys. Only keys with real API codes are enforced. */
+const MAPPED_PERMISSIONS: Partial<Record<Permission, readonly string[]>> = {
+  "merchants:suspend": ["merchants.suspend", "merchants.activate", "merchants.deactivate"],
+  "merchants:kyc_review": ["onboarding.approve", "onboarding.reject", "onboarding.request_changes"],
+  "financial:payouts": ["merchants.view_payouts"],
+  "compliance:users": ["admin_users.create", "admin_users.update", "admin_users.suspend"],
 };
 
-const ROLE_NAV: Record<AdminRole, string[]> = {
-  super_admin: [
-    "/dashboard",
-    "/merchants",
-    "/transactions",
-    "/fraud",
-    "/financial",
-    "/platform",
-    "/compliance",
-    "/analytics",
-  ],
-  ops_support: [
-    "/dashboard",
-    "/merchants",
-    "/transactions",
-    "/analytics",
-  ],
-  risk_compliance: [
-    "/dashboard",
-    "/merchants",
-    "/transactions",
-    "/fraud",
-    "/compliance/audit-log",
-    "/analytics",
-  ],
-  finance_settlements: [
-    "/dashboard",
-    "/merchants",
-    "/financial",
-    "/analytics",
-  ],
-  auditor: [
-    "/dashboard",
-    "/merchants",
-    "/transactions",
-    "/fraud",
-    "/financial",
-    "/platform",
-    "/compliance/audit-log",
-    "/analytics",
-  ],
-};
+const PATH_PERMISSIONS: { prefix: string; code: string }[] = [
+  { prefix: "/platform/company-types", code: "company_types.view" },
+  { prefix: "/platform/industry-types", code: "industry_types.view" },
+  { prefix: "/platform/document-types", code: "document_types.view" },
+  { prefix: "/platform/merchant-roles", code: "merchant_roles.view" },
+  { prefix: "/compliance/users", code: "admin_users.view" },
+  { prefix: "/compliance/admin-roles", code: "admin_roles.view" },
+  { prefix: "/financial/payouts", code: "merchants.view_payouts" },
+  { prefix: "/merchants/settlement-accounts", code: "settlement_bank_account.approve" },
+  { prefix: "/merchants", code: "merchants.view" },
+];
 
-export function canDo(role: AdminRole, permission: Permission): boolean {
-  return ROLE_PERMISSIONS[role]?.includes(permission) ?? false;
+export function hasPermission(permissions: readonly string[], code: string): boolean {
+  return permissions.includes(code);
 }
 
-export function canVisit(role: AdminRole, pathname: string): boolean {
-  return ROLE_NAV[role]?.some((p) => pathname === p || pathname.startsWith(p + "/")) ?? false;
+export function hasAnyPermission(permissions: readonly string[], codes: readonly string[]): boolean {
+  return codes.some((code) => permissions.includes(code));
+}
+
+export function canDo(permissions: readonly string[], permission: Permission): boolean {
+  const codes = MAPPED_PERMISSIONS[permission];
+  if (!codes) return true;
+  return hasAnyPermission(permissions, codes);
+}
+
+export function canVisit(permissions: readonly string[], pathname: string): boolean {
+  const match = PATH_PERMISSIONS.find(
+    ({ prefix }) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+  if (!match) return true;
+  return hasPermission(permissions, match.code);
 }
 
 export const ROLE_LABELS: Record<AdminRole, string> = {
@@ -117,3 +73,10 @@ export const ALL_ROLES: AdminRole[] = [
   "finance_settlements",
   "auditor",
 ];
+
+export function roleLabel(role: string): string {
+  if ((ALL_ROLES as readonly string[]).includes(role)) {
+    return ROLE_LABELS[role as AdminRole];
+  }
+  return role;
+}

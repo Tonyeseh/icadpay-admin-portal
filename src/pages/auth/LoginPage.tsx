@@ -1,35 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeIcon, EyeOffIcon, ShieldCheckIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAdminStore } from "@/store/useAdminStore";
-import { MOCK_ADMIN_USERS } from "@/mock/compliance";
+import { adminLogin, formatAuthError } from "@/lib/admin-auth-api";
 import { toast } from "sonner";
 
 export function LoginPage() {
-  const [email, setEmail] = useState("kola@icadpay.com");
-  const [password, setPassword] = useState("demo1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const signIn = useAdminStore((s) => s.signIn);
+  const setSessionFromAuthResponse = useAdminStore((s) => s.setSessionFromAuthResponse);
+  const bootstrapSession = useAdminStore((s) => s.bootstrapSession);
+  const sessionUser = useAdminStore((s) => s.user);
+  const sessionToken = useAdminStore((s) => s.accessToken);
   const navigate = useNavigate();
 
-  function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    if (sessionToken && sessionUser) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [sessionToken, sessionUser, navigate]);
+
+  useEffect(() => {
+    if (sessionToken && sessionUser) return;
+
+    let cancelled = false;
+    (async () => {
+      const ok = await bootstrapSession();
+      if (cancelled) return;
+      if (ok && useAdminStore.getState().user) {
+        navigate("/dashboard", { replace: true });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [bootstrapSession, navigate, sessionToken, sessionUser]);
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      const user = MOCK_ADMIN_USERS.find((u) => u.email === email);
-      if (user) {
-        signIn(user);
-        toast.success(`Welcome back, ${user.firstName}`);
-        navigate("/dashboard");
-      } else {
-        toast.error("Invalid credentials");
-      }
+    try {
+      const epoch = useAdminStore.getState().sessionEpoch;
+      const data = await adminLogin(email.trim(), password);
+      setSessionFromAuthResponse(data, epoch);
+      const name = `${data.user.firstName} ${data.user.lastName}`.trim();
+      toast.success(name ? `Welcome back, ${data.user.firstName}` : "Signed in");
+      navigate("/dashboard");
+    } catch (err: unknown) {
+      const body =
+        err && typeof err === "object" && "body" in err ? (err as { body: unknown }).body : undefined;
+      toast.error(formatAuthError(body));
+    } finally {
       setLoading(false);
-    }, 700);
+    }
   }
 
   return (
@@ -84,30 +112,6 @@ export function LoginPage() {
           {loading ? "Signing in…" : "Sign in"}
         </Button>
       </form>
-
-      <div className="mt-6 rounded-lg border border-border bg-muted/50 p-3">
-        <p className="mb-2 text-xs font-semibold text-muted-foreground">Demo accounts</p>
-        <div className="space-y-1">
-          {[
-            { email: "kola@icadpay.com", role: "Super Admin" },
-            { email: "amaka@icadpay.com", role: "Ops & Support" },
-            { email: "ngozi@icadpay.com", role: "Risk & Compliance" },
-            { email: "ife@icadpay.com", role: "Finance & Settlements" },
-            { email: "funke@icadpay.com", role: "Auditor" },
-          ].map(({ email: e, role }) => (
-            <button
-              key={e}
-              type="button"
-              onClick={() => setEmail(e)}
-              className="flex w-full items-center justify-between rounded-md px-2 py-1 text-xs hover:bg-accent"
-            >
-              <span className="font-mono text-muted-foreground">{e}</span>
-              <span className="text-muted-foreground">{role}</span>
-            </button>
-          ))}
-        </div>
-        <p className="mt-2 text-[10px] text-muted-foreground">Password: <span className="font-mono">demo1234</span></p>
-      </div>
     </div>
   );
 }

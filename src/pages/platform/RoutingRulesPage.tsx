@@ -20,9 +20,9 @@ const PROCESSOR_COLORS: Record<string, string> = {
 };
 
 export function RoutingRulesPage() {
-  const role = useAdminStore((s) => s.role);
+  const permissions = useAdminStore((s) => s.permissions);
   const [rules, setRules] = useState(MOCK_ROUTING_RULES);
-  const canWrite = canDo(role, "platform:write");
+  const canWrite = canDo(permissions, "platform:write");
 
   return (
     <div>
