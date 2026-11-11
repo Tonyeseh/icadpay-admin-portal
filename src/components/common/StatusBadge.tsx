@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 
 const styles: Record<string, string> = {
   success: "bg-success/10 text-success ring-success/20",
+  successful: "bg-success/10 text-success ring-success/20",
   paid: "bg-success/10 text-success ring-success/20",
   active: "bg-success/10 text-success ring-success/20",
   approved: "bg-success/10 text-success ring-success/20",
@@ -60,6 +61,7 @@ const labels: Record<string, string> = {
 
 const dotColors: Record<string, string> = {
   success: "bg-success",
+  successful: "bg-success",
   paid: "bg-success",
   active: "bg-success",
   approved: "bg-success",
