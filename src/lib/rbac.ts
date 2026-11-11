@@ -31,7 +31,8 @@ const PATH_PERMISSIONS: { prefix: string; code: string }[] = [
   { prefix: "/platform/merchant-roles", code: "merchant_roles.view" },
   { prefix: "/compliance/users", code: "admin_users.view" },
   { prefix: "/compliance/admin-roles", code: "admin_roles.view" },
-  { prefix: "/financial/payouts", code: "merchants.view_payouts" },
+  { prefix: "/financial/payouts", code: "payouts.view_all" },
+  { prefix: "/financial/ledger", code: "ledger_entries.view_all" },
   { prefix: "/merchants/settlement-accounts", code: "settlement_bank_account.approve" },
   { prefix: "/merchants", code: "merchants.view" },
 ];
